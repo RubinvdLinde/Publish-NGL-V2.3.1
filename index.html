@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="theme-color" content="#e60012">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Nintendo Games Library</title>
+  <link rel="manifest" href="manifest.webmanifest?v=2.3.1">
+  <link rel="icon" href="icons/icon-192.png?v=2.3.1">
+  <link rel="apple-touch-icon" href="icons/icon-192.png?v=2.3.1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="styles.css?v=2.3.1">
+</head>
+<body>
+  <div id="splashScreen" class="splash-screen" aria-label="Nintendo Games Library loading">
+    <div class="splash-inner">
+      <img src="branding/ngl-logo.png?v=2.3.1" alt="NGL logo">
+      <p class="splash-kicker">NGL</p>
+      <h1>Nintendo Games Library</h1>
+      <p>Your personal Nintendo collection, backlog and tier ranking</p>
+    </div>
+  </div>
+  <header class="topbar">
+    <div class="brand"><img src="branding/ngl-logo.png?v=2.3.1" alt="NGL"><div><strong>NGL</strong><span>Nintendo Games Library</span></div></div>
+    <div class="top-actions"><button id="installBtn" class="ghost hidden">Install</button><button id="settingsBtn" class="icon-btn" aria-label="Settings">⚙</button></div>
+  </header>
+
+  <main id="app">
+    <section class="view active" id="view-home">
+      <section class="brand-hero">
+        <img class="brand-hero-logo" src="branding/ngl-logo.png?v=2.3.1" alt="Nintendo Games Library logo">
+        <div class="brand-hero-copy">
+          <p class="eyebrow">NGL · YOUR COLLECTION</p>
+          <h1>Nintendo Games Library</h1>
+          <p>Your personal Nintendo collection, backlog and tier ranking</p>
+        </div>
+      </section>
+      <div id="homeStats" class="stats-grid"></div>
+      <section class="panel"><div class="section-head"><h2>Currently playing</h2><button class="link-btn" data-nav="backlog">Backlog</button></div><div id="playingStrip" class="cover-strip"></div></section>
+      <section class="panel"><div class="section-head"><h2>Your highest scores</h2><button class="link-btn" data-nav="library">Library</button></div><div id="topStrip" class="cover-strip"></div></section>
+      <section class="panel console-progress-panel">
+        <div class="section-head"><div><h2>Played by console</h2><p class="muted small-copy">Games played at least once / total games owned.</p></div></div>
+        <div id="consoleProgress" class="console-progress-grid"></div>
+      </section>
+      <section class="panel"><div class="section-head"><h2>Collection breakdown</h2></div><div id="platformBreakdown" class="breakdown"></div></section>
+    </section>
+
+    <section class="view" id="view-library">
+      <div class="view-title"><div><p class="eyebrow">COLLECTION</p><h1>Library</h1></div><span class="pill">Managed on laptop</span></div>
+      <div class="filters">
+        <input id="librarySearch" type="search" placeholder="Search games…">
+        <select id="platformFilter"><option value="">All platforms</option></select>
+        <select id="statusFilter"><option value="">All statuses</option><option value="unplayed">Not Played</option><option value="playing">Have Played</option><option value="played">Finished</option><option value="dropped">Stopped</option></select>
+        <select id="formatFilter"><option value="">Physical + digital</option><option value="Physical">Physical</option><option value="Digital">Digital</option></select>
+        <select id="sortFilter"><option value="id">Collection order</option><option value="title">Title A–Z</option><option value="score-desc">My score ↓</option><option value="meta-desc">Meta score ↓</option></select>
+      </div>
+      <div id="libraryCount" class="result-count"></div>
+      <div id="libraryGrid" class="library-grid"></div>
+    </section>
+
+    <section class="view" id="view-tier">
+      <div class="view-title"><div><p class="eyebrow">PERSONAL RANKING</p><h1>Tier List</h1></div><span id="rankedCount" class="pill"></span></div>
+      <p class="muted tier-help">On phone: drag a cover to another tier or between covers. Tap a cover to edit details.</p>
+      <div id="tierBoard" class="tier-board"></div>
+    </section>
+
+    <section class="view" id="view-backlog">
+      <div class="view-title"><div><p class="eyebrow">WHAT TO PLAY NEXT</p><h1>Backlog</h1></div></div>
+      <div id="backlogStats" class="stats-grid compact"></div>
+      <div class="segmented" id="backlogTabs"><button data-backlog="unplayed" class="active">Not Played</button><button data-backlog="playing">Have Played</button><button data-backlog="dropped">Stopped</button></div>
+      <div id="backlogGrid" class="library-grid"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="home"><span>⌂</span>Home</button>
+    <button class="nav-btn" data-view="library"><span>▦</span>Library</button>
+    <button class="nav-btn" data-view="tier"><span>★</span>Tier List</button>
+    <button class="nav-btn" data-view="backlog"><span>☰</span>Backlog</button>
+  </nav>
+
+  <dialog id="gameDialog" class="sheet"><form method="dialog" id="gameForm"><div class="sheet-grabber"></div><div id="gameDialogContent"></div></form></dialog>
+  <dialog id="settingsDialog" class="sheet small"><div class="sheet-grabber"></div><h2>Settings & backup</h2><p class="muted">Scores, status, notes and tier ranking are saved on this device. Game covers stay online unless you explicitly download them for offline use.</p><div class="settings-list"><button id="exportBtn">Export backup</button><label class="settings-file">Import backup<input id="importInput" type="file" accept="application/json"></label><button id="offlineBtn">Download all covers for offline use (~121 MB)</button><button id="clearOfflineBtn">Remove downloaded offline covers</button><button id="resetBtn" class="danger">Reset local changes</button></div><p class="muted settings-note">Add or replace games/covers on your laptop with <b>NGL Admin</b>, then publish the changed files. The phone app will pick up the updated library without reinstalling.</p><button class="close-dialog" data-close="settingsDialog">Close</button></dialog>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js?v=2.3.1" defer></script>
+</body>
+</html>

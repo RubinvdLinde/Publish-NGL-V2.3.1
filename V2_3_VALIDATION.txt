@@ -1,0 +1,9 @@
+NGL V2.3 validation targets
+- Official custom NGL logo in branding/ngl-logo.png
+- PWA icons regenerated from approved logo
+- Splash screen includes Nintendo Games Library, NGL and approved subtitle
+- Home hero uses the approved logo
+- Header uses the approved logo
+- Mini dashboard cards fixed width; titles max two lines
+- APP_VERSION 2.3 / service worker shell ngl-shell-v23
+- Existing user STATE_KEY retained to preserve scores, notes and tier rankings
