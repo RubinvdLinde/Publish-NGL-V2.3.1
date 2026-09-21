@@ -1,23 +1,233 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NGL Admin</title><link rel="icon" href="icons/icon-192.png">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NGL Admin</title>
+<link rel="icon" href="icons/icon-192.png">
 <style>
-:root{--red:#e60012;--bg:#0b0d12;--panel:#151a24;--line:#2a3040;--text:#f5f7fb;--muted:#9aa3b4}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}.wrap{max-width:950px;margin:auto;padding:28px 18px 60px}.head{display:flex;align-items:center;gap:14px;margin-bottom:22px}.head img{width:58px;height:58px;border-radius:15px}.head h1{margin:0}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.card h2{margin-top:0}.form{display:grid;grid-template-columns:1fr 1fr;gap:11px}.full{grid-column:1/-1}label{font-size:12px;color:var(--muted)}input,select{width:100%;margin-top:5px;padding:11px;border:1px solid var(--line);border-radius:11px;background:#0d1118;color:var(--text)}button{border:0;border-radius:11px;padding:12px 15px;background:var(--red);color:#fff;font-weight:750;cursor:pointer}.secondary{background:#262d3a}.status{margin-top:12px;padding:10px;border-radius:10px;background:#10151e;color:var(--muted);min-height:40px}.steps{display:grid;gap:10px}.step{display:flex;gap:10px}.n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--red);font-weight:800;flex:0 0 auto}@media(max-width:760px){.grid,.form{grid-template-columns:1fr}.full{grid-column:auto}}</style></head>
-<body><div class="wrap"><div class="head"><img src="branding/ngl-logo.png?v=2.3" alt=""><div><h1>NGL Admin</h1><div class="muted">Manage the hosted library on your laptop. Changes are written directly into this NGL folder.</div></div></div>
-<div class="grid"><section class="card"><h2>Add a game</h2><form id="addForm" class="form" enctype="multipart/form-data">
-<label class="full">Title<input name="title" required></label>
-<label>Platform<select name="platformCode"><option value="NS">Nintendo Switch</option><option value="NS2">Nintendo Switch 2</option><option value="GC">Nintendo GameCube</option><option value="WII">Nintendo Wii</option><option value="WiiU">Nintendo Wii U</option><option value="SNES">Super Nintendo</option><option value="GB">Game Boy</option></select></label>
-<label>Format<select name="format"><option>Physical</option><option>Digital</option></select></label>
-<label>Meta score<input name="metaScore" type="number" min="0" max="100"></label><label>My score<input name="score" type="number" min="0" max="100"></label>
-<label>Status<select name="status"><option value="unplayed">Not Played</option><option value="playing">Have Played</option><option value="played">Finished</option><option value="dropped">Stopped</option></select></label>
-<label>Main + Extra hours<input name="mainExtra" type="number" step="0.5" min="0"></label>
-<label>Completionist hours<input name="completionist" type="number" step="0.5" min="0"></label>
-<label>Time played<input name="timePlayed" type="number" step="0.5" min="0"></label>
-<label class="full">Cover image<input name="cover" type="file" accept="image/png,image/jpeg,image/webp" required></label>
-<div class="full"><button type="submit">Add to NGL</button></div></form><div id="addStatus" class="status">Ready.</div></section>
-<section class="card"><h2>Replace an existing cover</h2><form id="coverForm" class="form" enctype="multipart/form-data"><label class="full">Game<select id="gameSelect" name="id"></select></label><label class="full">New cover<input name="cover" type="file" accept="image/png,image/jpeg,image/webp" required></label><div class="full"><button type="submit" class="secondary">Replace cover</button></div></form><div id="coverStatus" class="status">Ready.</div><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><h2>After editing</h2><div class="steps"><div class="step"><div class="n">1</div><div>Check the game in the local NGL app.</div></div><div class="step"><div class="n">2</div><div>Open GitHub Desktop. It will show the changed <b>games.json</b>, <b>tier-order.json</b> and/or cover image.</div></div><div class="step"><div class="n">3</div><div>Commit the changes and click <b>Push origin</b>.</div></div><div class="step"><div class="n">4</div><div>Refresh NGL on your phone. New games automatically enter <b>Unranked</b>.</div></div></div></section></div></div>
+:root{--red:#e60012;--bg:#0b0d12;--panel:#151a24;--line:#2a3040;--text:#f5f7fb;--muted:#9aa3b4;--green:#77d69a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:1080px;margin:auto;padding:28px 18px 60px}
+.head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.head img{width:64px;height:64px;border-radius:16px;object-fit:cover}
+.head h1{margin:0}
+.version{display:inline-block;margin-top:4px;padding:3px 8px;border-radius:999px;background:#232a38;color:#cbd3e1;font-size:11px;font-weight:700}
+.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.card.full{grid-column:1/-1}
+.card h2{margin:0 0 5px}
+.card-intro{margin:0 0 16px;color:var(--muted)}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.form .full{grid-column:1/-1}
+label{font-size:12px;color:var(--muted)}
+input,select,textarea{width:100%;margin-top:5px;padding:11px;border:1px solid var(--line);border-radius:11px;background:#0d1118;color:var(--text);font:inherit}
+textarea{resize:vertical}
+button{border:0;border-radius:11px;padding:12px 15px;background:var(--red);color:#fff;font-weight:750;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+.secondary{background:#262d3a}
+.status{margin-top:12px;padding:10px;border-radius:10px;background:#10151e;color:var(--muted);min-height:40px}
+.edit-picker{display:grid;grid-template-columns:1fr 1.45fr;gap:11px;margin-bottom:15px}
+.edit-summary{display:flex;gap:14px;align-items:center;margin:0 0 15px;padding:12px;background:#10151e;border-radius:14px}
+.edit-summary img{width:66px;height:88px;object-fit:cover;border-radius:8px;background:#090b10}
+.edit-summary h3{margin:0 0 4px;font-size:16px}
+.edit-summary p{margin:2px 0;color:var(--muted);font-size:12px}
+.tier-pill{display:inline-block;margin-top:5px;padding:3px 8px;border-radius:999px;background:#262d3a;color:#fff;font-size:11px}
+.steps{display:grid;gap:10px}
+.step{display:flex;gap:10px}
+.n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--red);font-weight:800;flex:0 0 auto}
+.notice{border-left:3px solid var(--green);padding:10px 12px;background:#10151e;border-radius:9px;color:#cbd3e1;margin-top:15px}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+@media(max-width:760px){.grid,.form,.edit-picker{grid-template-columns:1fr}.card.full,.form .full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <img src="branding/ngl-logo.png?v=2.3" alt="NGL">
+    <div>
+      <h1>NGL Admin</h1>
+      <div class="muted">Manage the master game library on your laptop.</div>
+      <span class="version">Admin update 2.4</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="card full">
+      <h2>Edit an existing game</h2>
+      <p class="card-intro">Search for a game, select it and update its master data. Its existing tier and position are preserved.</p>
+
+      <div class="edit-picker">
+        <label>Search<input id="editSearch" placeholder="Type part of a game title…"></label>
+        <label>Game<select id="editGameSelect"></select></label>
+      </div>
+
+      <div id="editSummary" class="edit-summary"></div>
+
+      <form id="editForm" class="form" enctype="multipart/form-data">
+        <input id="editId" name="id" type="hidden">
+        <label class="full">Title<input id="editTitle" name="title" required></label>
+
+        <label>Platform
+          <select id="editPlatform" name="platformCode">
+            <option value="NS">Nintendo Switch</option>
+            <option value="NS2">Nintendo Switch 2</option>
+            <option value="GC">Nintendo GameCube</option>
+            <option value="WII">Nintendo Wii</option>
+            <option value="WiiU">Nintendo Wii U</option>
+            <option value="SNES">Super Nintendo</option>
+            <option value="GB">Game Boy</option>
+          </select>
+        </label>
+
+        <label>Format
+          <select id="editFormat" name="format">
+            <option>Physical</option><option>Digital</option><option>Unknown</option>
+          </select>
+        </label>
+
+        <label>Meta score<input id="editMetaScore" name="metaScore" type="number" min="0" max="100"></label>
+        <label>My score<input id="editScore" name="score" type="number" min="0" max="100"></label>
+
+        <label>Status
+          <select id="editStatus" name="status">
+            <option value="unplayed">Not Played</option>
+            <option value="playing">Have Played</option>
+            <option value="played">Finished</option>
+            <option value="dropped">Stopped</option>
+          </select>
+        </label>
+
+        <label>Main + Extra hours<input id="editMainExtra" name="mainExtra" type="number" step="0.5" min="0"></label>
+        <label>Completionist hours<input id="editCompletionist" name="completionist" type="number" step="0.5" min="0"></label>
+        <label>Time played<input id="editTimePlayed" name="timePlayed" type="number" step="0.5" min="0"></label>
+
+        <label class="full">Notes<textarea id="editNotes" name="notes" rows="3" placeholder="Optional notes…"></textarea></label>
+
+        <label class="full">Replace cover (optional)
+          <input id="editCover" name="cover" type="file" accept="image/png,image/jpeg,image/webp">
+        </label>
+
+        <div class="full"><button type="submit">Save changes</button></div>
+      </form>
+      <div id="editStatusMsg" class="status">Ready.</div>
+      <div class="notice"><b>Important:</b> changing a game here updates the master <code>games.json</code>. It does not change its S–E tier position.</div>
+    </section>
+
+    <section class="card">
+      <h2>Add a game</h2>
+      <form id="addForm" class="form" enctype="multipart/form-data">
+        <label class="full">Title<input name="title" required></label>
+        <label>Platform<select name="platformCode"><option value="NS">Nintendo Switch</option><option value="NS2">Nintendo Switch 2</option><option value="GC">Nintendo GameCube</option><option value="WII">Nintendo Wii</option><option value="WiiU">Nintendo Wii U</option><option value="SNES">Super Nintendo</option><option value="GB">Game Boy</option></select></label>
+        <label>Format<select name="format"><option>Physical</option><option>Digital</option><option>Unknown</option></select></label>
+        <label>Meta score<input name="metaScore" type="number" min="0" max="100"></label>
+        <label>My score<input name="score" type="number" min="0" max="100"></label>
+        <label>Status<select name="status"><option value="unplayed">Not Played</option><option value="playing">Have Played</option><option value="played">Finished</option><option value="dropped">Stopped</option></select></label>
+        <label>Main + Extra hours<input name="mainExtra" type="number" step="0.5" min="0"></label>
+        <label>Completionist hours<input name="completionist" type="number" step="0.5" min="0"></label>
+        <label>Time played<input name="timePlayed" type="number" step="0.5" min="0"></label>
+        <label class="full">Notes<textarea name="notes" rows="2"></textarea></label>
+        <label class="full">Cover image<input name="cover" type="file" accept="image/png,image/jpeg,image/webp" required></label>
+        <div class="full"><button type="submit">Add to NGL</button></div>
+      </form>
+      <div id="addStatus" class="status">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>After editing</h2>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><div>Save the change in NGL Admin.</div></div>
+        <div class="step"><div class="n">2</div><div>Open <b>GitHub Desktop</b>. For a status/score change you will normally see <b>data/games.json</b> changed.</div></div>
+        <div class="step"><div class="n">3</div><div>Enter a Summary such as <b>Update game status</b>, then click <b>Commit to main</b>.</div></div>
+        <div class="step"><div class="n">4</div><div>Click <b>Push origin</b>. GitHub Pages will publish the new master data.</div></div>
+      </div>
+      <hr>
+      <p class="muted">A phone or browser that already has its own local edit for that game can still display its local value. NGL deliberately keeps device-specific edits separate from the published master data.</p>
+    </section>
+  </div>
+</div>
+
 <script>
-async function refreshGames(){const r=await fetch('/api/games');const games=await r.json();document.querySelector('#gameSelect').innerHTML=games.sort((a,b)=>Number(a.id)-Number(b.id)).map(g=>`<option value="${g.id}">${String(g.id).padStart(3,'0')} — ${g.title} [${g.platformCode}]</option>`).join('')}
-async function send(form,statusEl,url){statusEl.textContent='Saving…';const r=await fetch(url,{method:'POST',body:new FormData(form)});const j=await r.json().catch(()=>({ok:false,message:'Invalid server response'}));statusEl.textContent=j.message|| (j.ok?'Saved.':'Failed.');if(j.ok){form.reset();await refreshGames()}}
-document.querySelector('#addForm').addEventListener('submit',e=>{e.preventDefault();send(e.currentTarget,document.querySelector('#addStatus'),'/api/add-game')});
-document.querySelector('#coverForm').addEventListener('submit',e=>{e.preventDefault();send(e.currentTarget,document.querySelector('#coverStatus'),'/api/replace-cover')});refreshGames();
-</script></body></html>
+let allGames=[];
+
+const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const nval=v=>(v===null||v===undefined?'':v);
+
+async function refreshGames(selectId=null){
+  const r=await fetch('/api/games',{cache:'no-store'});
+  allGames=await r.json();
+  allGames.sort((a,b)=>Number(a.id)-Number(b.id));
+  renderEditOptions(document.querySelector('#editSearch').value,selectId);
+}
+
+function renderEditOptions(query='',selectId=null){
+  const q=query.trim().toLowerCase();
+  const filtered=allGames.filter(g=>!q||g.title.toLowerCase().includes(q)||(g.platform||'').toLowerCase().includes(q));
+  const sel=document.querySelector('#editGameSelect');
+  const previous=selectId || sel.value;
+  sel.innerHTML=filtered.map(g=>`<option value="${g.id}">${String(g.id).padStart(3,'0')} — ${esc(g.title)} [${esc(g.platformCode)}]</option>`).join('');
+  if(previous && filtered.some(g=>String(g.id)===String(previous))) sel.value=String(previous);
+  fillEditForm();
+}
+
+function fillEditForm(){
+  const id=document.querySelector('#editGameSelect').value;
+  const g=allGames.find(x=>String(x.id)===String(id));
+  const summary=document.querySelector('#editSummary');
+  if(!g){
+    summary.innerHTML='<div class="muted">No matching game.</div>';
+    return;
+  }
+
+  document.querySelector('#editId').value=g.id;
+  document.querySelector('#editTitle').value=g.title||'';
+  document.querySelector('#editPlatform').value=g.platformCode||'NS';
+  document.querySelector('#editFormat').value=g.format||'Physical';
+  document.querySelector('#editMetaScore').value=nval(g.metaScore);
+  document.querySelector('#editScore').value=nval(g.score);
+  document.querySelector('#editStatus').value=g.status||'unplayed';
+  document.querySelector('#editMainExtra').value=nval(g.mainExtra);
+  document.querySelector('#editCompletionist').value=nval(g.completionist);
+  document.querySelector('#editTimePlayed').value=nval(g.timePlayed);
+  document.querySelector('#editNotes').value=g.notes||'';
+  document.querySelector('#editCover').value='';
+
+  const cv=encodeURIComponent(g.coverVersion||'1');
+  const cover=g.cover?`covers/${encodeURIComponent(g.cover)}?cv=${cv}`:'icons/icon-512.png';
+  const tier=g.tier||'U';
+  summary.innerHTML=`<img src="${cover}" alt=""><div><h3>${esc(g.title)}</h3><p>${esc(g.platform)} · ${esc(g.sourceStatus||g.status)} · ${esc(g.format||'')}</p><span class="tier-pill">Tier ${esc(tier)}</span></div>`;
+}
+
+async function send(form,statusEl,url,keepSelected=false){
+  statusEl.textContent='Saving…';
+  try{
+    const r=await fetch(url,{method:'POST',body:new FormData(form)});
+    const j=await r.json().catch(()=>({ok:false,message:'Invalid server response'}));
+    statusEl.textContent=j.message||(j.ok?'Saved.':'Failed.');
+    if(j.ok){
+      const id=keepSelected?document.querySelector('#editId').value:null;
+      if(!keepSelected) form.reset();
+      await refreshGames(id);
+    }
+  }catch(err){
+    statusEl.textContent='Could not save: '+err.message;
+  }
+}
+
+document.querySelector('#editSearch').addEventListener('input',e=>renderEditOptions(e.target.value));
+document.querySelector('#editGameSelect').addEventListener('change',fillEditForm);
+document.querySelector('#editForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  send(e.currentTarget,document.querySelector('#editStatusMsg'),'/api/update-game',true);
+});
+document.querySelector('#addForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  send(e.currentTarget,document.querySelector('#addStatus'),'/api/add-game',false);
+});
+
+refreshGames();
+</script>
+</body>
+</html>
