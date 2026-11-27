@@ -1,34 +1,76 @@
-Nintendo Games Library (NGL) V2.3.1
+NGL COVER DOWNLOAD FIX (12 games)
+=================================
+Replace the old updater files with these files in your EXISTING local NGL repository.
+Run apply_ngl_new_games.bat again. The original failed run did not change games.json or tier-order.json.
+This version uses a replacement cover source for inKONBINI and OU. The other ten URLs and all game data remain unchanged.
+If a source fails, choose B to open the product/source page, save the correct front-cover image to Downloads, then return to the console and press Enter to select it. S skips the unavailable cover and leaves the library untouched. Successful images are cached outside the GitHub repository for future retries. Backups are saved outside the repository too.
+Only after SUCCESS, commit data/games.json, data/tier-order.json and the added covers in GitHub Desktop, then Push origin. Do not publish updater files or logs.
 
-This is the phone-ready PWA release.
+NGL - 12 NEW GAMES UPDATE (27 NOV 2026)
+========================================
 
-Key changes from V2.1:
-- Covers remain hosted/online by default instead of being stored in the PWA cache.
-- Optional full offline cover download (~121 MB) remains available in Settings.
-- Stable phone-side storage key so future app/database updates preserve rankings and edits.
-- New games from a published games.json are automatically added to Unranked.
-- Per-cover content versioning prevents old cover art from sticking after replacements.
-- NGL Admin for adding games and replacing covers on the laptop.
-- PWA manifest has a stable app ID and new NGL icon.
-- GitHub Pages deployment guide included.
+WHAT THIS DOES
+--------------
+Adds these 12 games to your CURRENT NGL master library without replacing existing game data:
 
-Local testing:
-- start_ngl_windows.bat = app
-- start_ngl_admin_windows.bat = laptop library manager
+1. Hollow Knight: Silksong - Nintendo Switch 2 Edition
+2. The Legend of Zelda: Ocarina of Time
+3. Star Fox
+4. inKONBINI: One Store. Many Stories
+5. OU
+6. Selfloss
+7. Bahamut and the Waqwaq Tree
+8. Moomintroll: Winter's Warmth
+9. Cloudpunk
+10. The Wild at Heart
+11. Orbitals
+12. Nocturnal
 
-Read DEPLOY_AND_UPDATE.md for phone installation and future update workflow.
+All are added as:
+- Physical
+- Not Played
+- Unranked
+- User score blank
+- Time Played blank
 
+The updater also downloads the cover images and adds the games to tier-order.json under U (Unranked).
 
-V2.3.1 branding update
-- New official NGL artwork used for the PWA/home-screen icon.
-- Branded splash screen with Nintendo Games Library / NGL and the subtitle:
-  "Your personal Nintendo collection, backlog and tier ranking".
-- New branded Home hero and header icon.
-- Highest-score/currently-playing cards now have fixed widths and two-line clamped titles so long names cannot change spacing.
+HOW TO USE
+----------
+1. Extract the contents of this ZIP DIRECTLY into your local GitHub NGL repository folder.
+   This is the folder that already contains index.html, data\ and covers\.
+2. Double-click apply_ngl_new_games.bat.
+3. Wait for SUCCESS.
+4. Open GitHub Desktop.
+5. Summary: Add 12 new games
+6. Commit to main.
+7. Push origin.
+8. After GitHub Pages republishes, reopen NGL on your phone.
 
+The updater creates backups before changing games.json and tier-order.json.
+It does NOT overwrite existing games and will skip a title/platform combination that already exists.
 
-V2.3.1 local-cache fix
-- Local testing now opens at http://localhost:8783/?v=2.3.1
-- Service workers are disabled/unregistered during local HTTP testing.
-- The PWA service worker still activates normally once hosted over HTTPS.
-- CSS, JavaScript and manifest resources are versioned to prevent stale browser files.
+DATA USED
+---------
+Hollow Knight: Silksong (Switch 2): Meta 91 | Main+Extra 47h | Completionist 65.5h
+Ocarina of Time (Switch 2): Meta 95 | Main+Extra 24h | Completionist 27.5h
+Star Fox (Switch 2): Meta 81 | Main+Extra 7h | Completionist 28.5h
+inKONBINI (Switch): Meta tbd | Main+Extra 8h | Completionist 13h
+OU (Switch): Meta tbd | Main+Extra 3.5h | Completionist 4h
+Selfloss (Switch): Meta tbd | Main+Extra 7.5h | Completionist 8h
+Bahamut and the Waqwaq Tree (Switch): Meta tbd | Main+Extra tbd | Completionist 4.5h
+Moomintroll: Winter's Warmth (Switch): Meta 78 | Main+Extra 7h | Completionist 11h
+Cloudpunk (Switch): Meta 54 | Main+Extra 11.5h | Completionist 15h
+The Wild at Heart (Switch): Meta 76 | Main+Extra 14h | Completionist 18.5h
+
+For games without enough platform-specific Metacritic reviews, Meta is intentionally left blank/tbd rather than substituting a single review score.
+
+Orbitals (Switch 2): Meta 82 | Main+Extra 6h | Completionist 6.5h
+Orbitals is added as Physical / Not Played / Unranked.
+
+Nocturnal (Switch): Meta tbd | Main+Extra 2.5h | Completionist 3h
+The published 81 Metascore is for PC; a Switch-specific aggregate was not verified.
+Nocturnal cover: standard Red Art Games physical cover (ESRB), since the exact purchased edition was not specified.
+Sources: https://www.dekudeals.com/items/nocturnal ; https://gg.deals/franchise/nocturnal/nintendo/
+Cover images are downloaded when the updater runs on your laptop. Network access and remote image availability are required.
+In GitHub Desktop, commit data/games.json, data/tier-order.json and the new cover files; leave .bak files and updater/log files unselected if you do not want them published.
